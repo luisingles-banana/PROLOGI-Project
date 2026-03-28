@@ -1,15 +1,4 @@
 
-def get_value(prompt):
-    while True:
-        value = input(prompt)
-
-        if value == "":
-            return ""
-
-        if value.isdigit():
-            return int(value)
-
-        print("Invalid input!")
 
 
 
@@ -19,17 +8,14 @@ due_date = []
 days_remaining = []
 
 print("Enter today's date")
-today_year = input("Year: ")
-today_month = input("Month: ")
-today_day = input("Day: ")
+today_year = input("Year: ") #INT
+today_month = input("Month: ") #INT
+today_day = input("Day: ") #INT
 
 while True:
     print("\n===== TASK LIST =====")
     header = ("ID", "Task", "Due Date", "Days Remaining")
     print(f"{header[0]:<5}{header[1]:<15}{header[2]:<15}{header[3]:<20}")
-    if len(tasks) == 0:
-        print("No tasks.")
-        return
 
     for i in range(len(tasks)):
         print(f"{i:<5} {tasks[i]:<15} {due_date[i]:<15} {days_remaining[i]:<20}")
@@ -37,7 +23,7 @@ while True:
 
 
     option = input("\nEnter 1 to Add Deadlines, 2 to Remove Tasks, 0 to Exit: ")
-match option:
+    match option:
     case "1":
         task = input("Enter task: ") #STRING
         tasks.append(task)
