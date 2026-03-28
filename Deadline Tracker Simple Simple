@@ -19,9 +19,9 @@ due_date = []
 days_remaining = []
 
 print("Enter today's date")
-today_year = get_value("Year: ")
-today_month = get_value("Month: ")
-today_day = get_value("Day: ")
+today_year = input("Year: ")
+today_month = input("Month: ")
+today_day = input("Day: ")
 
 while True:
     print("\n===== TASK LIST =====")
@@ -39,23 +39,19 @@ while True:
     option = input("\nEnter 1 to Add Deadlines, 2 to Remove Tasks, 0 to Exit: ")
 match option:
     case "1":
-        task = input("Enter task: ")
+        task = input("Enter task: ") #STRING
         tasks.append(task)
 
         print("\nDue Date")
-        due_year = get_value("Year: ")
-        due_month = get_value("Month: ")
-        due_day = get_value("Day: ")
-
-        if due_year == "" or due_month == "" or due_day == "":
-            due_date.append("No Date")
-            days_remaining.append("No Date")
-        else:
-            due_date.append(f"{due_month}/{due_day}/{due_year}")
-            today_total = today_year * 365 + today_month * 30 + today_day
-            due_total = due_year * 365 + due_month * 30 + due_day
-            days = 
-            days_remaining.append(f"{days} Days Remaining")
+        due_year = input("Year: ") #INT
+        due_month = input("Month: ") #INT
+        due_day = input("Day: ") #INT
+        due_date.append(f"{due_month}/{due_day}/{due_year}")
+        
+        today_total = today_year * 365 + today_month * 30 + today_day
+        due_total = due_year * 365 + due_month * 30 + due_day
+        days = due_total - today_total
+        days_remaining.append(f"{days} Days Remaining")
 
     case "2":
         if len(tasks) == 0:
