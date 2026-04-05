@@ -1,59 +1,110 @@
+def check_date(prompt, min_value, max_value):
+    while True:
+        check_value = int(input(prompt))                                         #INT
 
-tasks = []
-due_date = []
-days_remaining = []
+        # Checks if less than min_value or more than max_value
+        if check_value < min_value or check_value > max_value:
+            print("Invalid Input")
+            continue
+        else:
+            break
 
+    return check_value
+
+tasks = []                                                                       #STRING
+due_date = []                                                                    #STRING
+days_remaining = []                                                              #STRING
+number_of_tasks = 0                                                              #INT
+
+# Input for Date Today
 print("Enter today's date")
-today_year = int(input("Year: ")) #INT
-today_month = int(input("Month: ")) #INT
-today_day = int(input("Day: ")) #INT
+today_year = check_date("Year: ", 1, 9999)                                       #INT
+today_month = check_date("Month: ", 1, 12)                                       #INT    
+
+# Checks if Leap Year
+days_per_month_today = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]          #ARRAY 
+if (today_year % 4 == 0 and today_year % 100 != 0) or (today_year % 400 == 0):
+    days_per_month_today[1] = 29                                                 #INT
+
+today_day = check_date("Day: ", 1, days_per_month_today[today_month - 1])        #INT
 
 while True:
-    print(f"{today_month}/{today_day}/{today_year}")
-    print("\n===== TASK LIST =====")
+    # Prints Table
+    print(f"\n\nDate Today: {today_month}/{today_day}/{today_year}")
+    print("===== TASK LIST =====")
     header = ("ID", "Task", "Due Date", "Days Remaining")
     print(f"{header[0]:<5}{header[1]:<15}{header[2]:<15}{header[3]:<20}")
 
-    for i in range(len(tasks)):
+    for i in range(number_of_tasks):
         print(f"{i:<5}{tasks[i]:<15}{due_date[i]:<15}{days_remaining[i]:<20}")
 
+    # Options
     option = input("\nEnter 1 to Add Deadlines, 2 to Remove Tasks, 0 to Exit: ")
     match option:
         case "1":
-            task = input("Enter task: ") #STRING
+            task = input("Enter task: ")                                          #STRING
             tasks.append(task)
 
+            # Due Date
             print("\nDue Date")
-            due_year = int(input("Year: ")) #INT
-            due_month = int(input("Month: ")) #INT
-            due_day = int(input("Day: ")) #INT
+            due_year = check_date("Year: ", 1, 9999)                              #INT
+            due_month = check_date("Month: ", 1, 12)                              #INT    
 
-            due_date.append(f"{due_month}/{due_day}/{due_year}")
-        
-            today_total = today_year * 365 + today_month * 30 + today_day
-            due_total = due_year * 365 + due_month * 30 + due_day
+            # Checks if Leap Year. Changes the 2nd month to 29 days
+            days_per_month_due = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31] #ARRAY 
+            if (due_year % 4 == 0 and due_year % 100 != 0) or (due_year % 400 == 0):
+                days_per_month_due[1] = 29                                        #INT
+
+            due_day = check_date("Day: ", 1, days_per_month_due[due_month - 1])   #INT
+
+            due_date.append(f"{due_month}/{due_day}/{due_year}")                  #STRING; idk how to do this in pseudocode
+
+            # Day Calculation
+            # Calculates number of days last year of today_year from year 0  
+            today_leap_count = today_year // 4 - today_year // 100 + today_year // 400  #INT
+            today_total = today_year * 365 + today_leap_count                     #INT
+            for m in range(today_month - 1):
+                today_total += days_per_month_today[m]
+            today_total += today_day
+
+            # Calculates number of days last year of due_year from year 0
+            due_leap_count = due_year // 4 - due_year // 100 + due_year // 400    #INT
+            due_total = due_year * 365 + due_leap_count                           #INT
+            for m in range(due_month - 1):
+                due_total += days_per_month_due[m]
+            due_total += due_day
+
+            # Calculate Number of Days from current day
             days = due_total - today_total
+
             days_remaining.append(f"{days} Days Remaining")
 
+            number_of_tasks += 1
+            continue
+
         case "2":
-            if len(tasks) == 0:
-                print("No tasks to remove.")
+            if number_of_tasks == 0:
+                print("Nothing to remove!")
                 continue
 
-            while True:
-                i = input("Enter ID to remove: ")
+            rem = check_date("Enter Task to Remove: ", 0, number_of_tasks - 1)        # INT
 
-                if i.isdigit():
-                    i = int(i)
+            # shift everything left to fill the gap
+            i = rem
+            while i < number_of_tasks - 1:                                            # for (int i = rem; i < number_of_tasks - 1; i++){
+                tasks[i] = tasks[i + 1]
+                due_date[i] = due_date[i + 1]
+                days_remaining[i] = days_remaining[i + 1]
+                i += 1
 
-                    if 0 <= i < len(tasks):
-                        del tasks[i]
-                        del due_date[i]
-                        del days_remaining[i]
-                        print("Task removed.")
-                        break
+            # Removes the last slot of the array (duplicate)
+            tasks[number_of_tasks - 1] = ""
+            due_date[number_of_tasks - 1] = ""
+            days_remaining[number_of_tasks - 1] = ""
 
-                print("Invalid input!")
+            number_of_tasks -= 1
+            print("Task Removed!")
+            continue
 
         case "0":
             print("Exiting Program...!")
