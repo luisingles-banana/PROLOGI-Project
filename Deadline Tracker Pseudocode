@@ -1,0 +1,142 @@
+Function Integer check_value(String prompt, Integer min_value, Integer max_value)
+	While True
+		Declare Integer check_value
+		
+		Display prompt
+		Input check_value
+		
+		If check_value < min_value OR check_value > max_value Then
+			Display "Invalid Input!"
+			continue
+		else
+			break
+		End If 
+	End While
+	return check_value
+End Function
+
+// Start Program
+// Declaration of Arrays
+Constant Integer Max = 9999
+Declare Integer number_of_tasks = 0
+Declare String tasks[Max]
+Declare String due_date[Max]
+Declare days_remaining[Max]
+
+// Input for Date Today
+Declare Integer today_year, today_month, today_day
+Display "Enter Date Today"
+Set today_year = check_value("Year: ", 1, 9999)
+Set today_month = check_value("Month: ", 1, 12)
+
+// Checking if Leap Year
+Declare Integer days_per_month_TODAY[12] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+if (today_year % 4 == 0 AND NOT(today_year % 100 == 0)) OR (today_year % 400 == 0)
+	days_per_month_TODAY[1] = 29
+
+Set today_day = check_value("Day: ", 1, days_per_month_TODAY[today_month - 1])
+
+// Main Program
+While True
+	Display "Date Today: ", today_year, "/", today_month, "/", today_day
+	// Prints Table
+	Display "ID", "Task", "Due Date", "Days Remaining" 
+	For i = 0 to number_of_tasks - 1
+		Display i, tasks[i], due_date[i], days_remaining[i] 
+	End For 
+	
+	Declare Integer option
+	Display "Enter 1 to Add Deadlines, 2 to Remove Tasks, 0 to Exit:"
+	Input option
+
+	Select option
+		case 1:
+			number_of_tasks = number_of_tasks + 1
+			
+			// Asking User for Task
+			Declare String input_task
+			Display "Enter Task: "
+			Input input_task
+			
+			// Appending task to tasks array
+			Set tasks[number_of_tasks - 1] = input_task 
+			
+			// Asking for due date
+			Declare Integer due_year, due_month, due_day
+			Display "Enter Due Date"
+			Set due_year = check_value("Year: ", 1, 9999)
+			Set due_month = check_value("Month: ", 1, 12)
+			
+			// Checking if Leap Year
+			Declare Integer days_per_month_DUE[12] = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]
+			
+			If (due_year % 4 == 0 AND NOT(due_year % 100 == 0)) OR (due_year % 400 == 0) Then
+				days_per_month_DUE[1] = 29
+			End If
+				
+			Set due_day = check_value("Day: ", 1, days_per_month_DUE[due_month - 1])
+			
+			Set due_date[number_of_tasks - 1] = due_month, "/", due_day, "/", due_year
+			
+			// Day Calculation 
+			// Calculates Number of days from day 0 up to Today Date
+			Declare Integer today_leap_count = today_year // 4 - today_year // 100 + today_year // 400
+			Declare Integer today_total = today_year * 365 + today_leap_count
+			Declare Integer inc_today
+			For inc_today = 0 To today_month - 2
+				Set today_total = today_total + days_per_month_TODAY[inc_today]
+			End For
+			Set today_total = today_total + today_day
+			
+			// Calculates Number of days from day 0 up to Due Date
+			Declare Integer due_leap_count 
+			Set due_leap_count = due_year // 4 - due_year // 100 + due_year // 400
+			Declare Integer due_total 
+			Set due_total = due_year * 365 + due_leap_count
+			
+			Declare Integer inc_due
+			For inc_due = 0 To due_month - 2
+				Set due_total = due_total + days_per_month_DUE[inc_due]
+			End For
+			Set due_total = due_total + due_day
+			
+			Declare Integer days 
+			Set days = due_total - today_total
+			
+			Set days_remaining[number_of_tasks - 1] = days "Days Remaining"
+			
+		case 2:
+			if number_of_tasks == 0
+				Display "Nothing To Remove!"
+				continue
+			
+			Declare Integer rem
+			Set rem = check_value("Enter Task to Remove: ", 0, number_of_tasks - 1)
+			
+			// Shifts Everything Left to Remove task
+			Declare Integer inc_remove
+			For inc_remove = rem To number_of_tasks - 2
+				Set tasks[inc_remove] = tasks[inc_remove + 1]
+				Set due_date[inc_remove] = due_date[inc_remove + 1]
+				Set days_remaining[inc_remove] = days_remaining[inc_remove + 1]
+			End For
+			
+			// Removes the Last Slot of the Array (Duplicate)
+			Set tasks[number_of_tasks - 1] = ""
+			Set due_date[number_of_tasks - 1] = ""
+			Set days_remaining[number_of_tasks - 1] = ""
+			
+			Set number_of_tasks = number_of_tasks - 1
+			Display "Task Removed!"
+			continue
+			
+		case 0:
+			Display("Exiting Tracker...")
+			break
+		
+		Default:
+			Display "Invalid Choice!"
+			continue
+	End Select
+
+End While 

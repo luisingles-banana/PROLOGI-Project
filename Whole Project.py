@@ -32,7 +32,7 @@ def deadline_tracker():
     while True:
         # Prints Table
         print(f"\n\nDate Today: {today_month}/{today_day}/{today_year}")
-        print("===== TASK LIST =====")
+        print("==================== TASK LIST ====================")
         header = ("ID", "Task", "Due Date", "Days Remaining")
         print(f"{header[0]:<5}{header[1]:<15}{header[2]:<15}{header[3]:<20}")
 
@@ -212,10 +212,10 @@ def flashcard():
 # MAIN CODE
 while True:
     option = input("""
-    0 - Exit
-    1 - Flashcard
-    2 - Deadline Tracker
-        """)
+1 - Flashcard
+2 - Deadline Tracker
+0 - Exit
+Input Option: """)
 
     match option:
         case "1":
